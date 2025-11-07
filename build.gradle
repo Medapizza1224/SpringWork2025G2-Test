@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'war'
 	id 'org.gretty' version '4.1.4'
 }
 
@@ -27,6 +28,17 @@ dependencies {
 	implementation 'com.zaxxer:HikariCP:5.1.0'
 	runtimeOnly 'com.mysql:mysql-connector-j:8.4.0'
 
+	// QR Code Support (ZXing)
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.google.zxing:javase:3.5.3'
+    
+    // JSON Support (Gson)
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // --- ここに追加 ---
+    // Password Hashing Support (jBCrypt)
+    implementation 'org.mindrot:jbcrypt:0.4'
+
 	// Test Support
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-api:5.10.2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
@@ -34,4 +46,12 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+gretty {
+    // Grettyが使用するServletコンテナのバージョンを指定
+    servletContainer = 'tomcat10'
+    
+    // Webアプリケーションのコンテキストパス（URLのルート）を指定
+    contextPath = '/'
 }

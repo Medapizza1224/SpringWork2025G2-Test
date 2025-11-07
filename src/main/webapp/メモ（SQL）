@@ -1,0 +1,93 @@
+./gradlew clean
+./gradlew --stop
+./gradlew appRun
+
+リモートではじめて./gradlew appRunするとき：chmod +x ./gradlew
+ブラウザで開く：./gradlew appRun
+
+データベースログイン：mysql -h mysql -u root -p
+データベースパスワード：password
+データベースを作成：create database `springwork_2025g2`;
+
+データベースを使う：USE `springwork_2025g2`;
+
+SHOW COLUMNS FROM テーブル名;
+
+-- ユーザ管理テーブル
+-- ユーザー管理テーブル
+CREATE TABLE UserManagement (
+    user_id                VARCHAR(36)  NOT NULL,
+    user_name              VARCHAR(64)  NOT NULL,
+    user_password          VARCHAR(255) NOT NULL,
+    secret_question        VARCHAR(255) NOT NULL,
+    secret_question_answer VARCHAR(255) NOT NULL,
+    user_status            VARCHAR(64)  NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
+-- 管理者管理テーブル
+-- 管理者管理テーブル
+CREATE TABLE AdminManagement (
+    admin_id       VARCHAR(36)  NOT NULL,
+    admin_name     VARCHAR(64)  NOT NULL,
+    admin_password VARCHAR(255) NOT NULL,
+    admin_status   VARCHAR(64)  NOT NULL,
+    PRIMARY KEY (admin_id)
+);
+
+-- 座席管理テーブル
+CREATE TABLE SeatManagement (
+    reservation_id     VARCHAR(36) NOT NULL,
+    user_id            VARCHAR(36) NOT NULL,
+    number_of_people   INT NOT NULL,
+    reservation_date   DATE NOT NULL,
+    start_time         TIME NOT NULL,
+    end_time           TIME NOT NULL,
+    reservation_status VARCHAR(64) NOT NULL,
+    seat_1             VARCHAR(64) NOT NULL,
+    seat_2             VARCHAR(64) NULL,
+    seat_3             VARCHAR(64) NULL,
+    seat_4             VARCHAR(64) NULL,
+    seat_5             VARCHAR(64) NULL,
+    seat_6             VARCHAR(64) NULL,
+    seat_7             VARCHAR(64) NULL,
+    seat_8             VARCHAR(64) NULL,
+    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (reservation_id)
+);
+
+DROP TABLE SeatManagement;
+
+INSERT INTO SeatManagement (
+    reservation_id,
+    user_id,
+    number_of_people,
+    reservation_date,
+    start_time,
+    end_time,
+    reservation_status,
+    seat_1,
+    seat_2,
+    seat_3,
+    seat_4,
+    seat_5,
+    seat_6,
+    seat_7,
+    seat_8
+) VALUES (
+    'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d', -- reservation_id (仮のUUID)
+    'f0e9d8c7-b6a5-4f4e-3d2c-1b0a9f8e7d6c', -- user_id (仮のUUID)
+    2,                                      -- number_of_people (人数)
+    '2025-06-20',                           -- reservation_date (予約日)
+    '18:00:00',                             -- start_time (開始時刻)
+    '20:00:00',                             -- end_time (終了時刻)
+    '予約済み',                             -- reservation_status (ステータス)
+    'A1',                                   -- seat_1 (予約された座席1)
+    'A2',                                   -- seat_2 (予約された座席2)
+    NULL,                                   -- seat_3 (予約されていないのでNULL)
+    NULL,                                   -- seat_4
+    NULL,                                   -- seat_5
+    NULL,                                   -- seat_6
+    NULL,                                   -- seat_7
+    NULL                                    -- seat_8
+);

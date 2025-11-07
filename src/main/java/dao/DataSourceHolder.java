@@ -30,20 +30,25 @@ import com.zaxxer.hikari.HikariDataSource;
  * }
  * }</pre>
  */
-class DataSourceHolder {
+// ★★★ この 'public' が付いたクラス定義が、ファイル内に一つだけ存在する状態にします ★★★
+public class DataSourceHolder {
   private static HikariConfig _hikariConfig;
   private static DataSource _dataSource;
 
   public final DataSource dataSource;
 
   public DataSourceHolder() {
-    if (DataSourceHolder._hikariConfig == null) {
-      DataSourceHolder._hikariConfig = new HikariConfig(
-          this.getClass().getClassLoader().getResource("dataSource.properties").getPath());
-    }
+    // 複数のスレッドから同時にアクセスされる可能性があるため、同期処理を行う
+    synchronized (DataSourceHolder.class) {
+      if (DataSourceHolder._hikariConfig == null) {
+        // dataSource.propertiesファイルへのパスを取得
+        String propertiesPath = this.getClass().getClassLoader().getResource("dataSource.properties").getPath();
+        DataSourceHolder._hikariConfig = new HikariConfig(propertiesPath);
+      }
 
-    if (DataSourceHolder._dataSource == null) {
-      DataSourceHolder._dataSource = new HikariDataSource(DataSourceHolder._hikariConfig);
+      if (DataSourceHolder._dataSource == null) {
+        DataSourceHolder._dataSource = new HikariDataSource(DataSourceHolder._hikariConfig);
+      }
     }
 
     this.dataSource = DataSourceHolder._dataSource;
