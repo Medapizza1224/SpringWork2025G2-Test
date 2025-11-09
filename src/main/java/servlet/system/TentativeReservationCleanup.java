@@ -34,7 +34,7 @@ public class TentativeReservationCleanup implements ServletContextListener {
         // タスクを定義（ラムダ式で記述）
         Runnable cleanupTask = () -> {
             try {
-                System.out.println("仮予約クリーンアップタスク実行: " + LocalDateTime.now());
+                System.out.println("仮予約/予約時間経過クリーンアップタスク実行: " + LocalDateTime.now());
                 SeatManagementDao dao = new SeatManagementDao();
                 
                 // 常にUTCであるInstantを使い、「現在時刻から10分前」の時点を計算します。
@@ -45,7 +45,7 @@ public class TentativeReservationCleanup implements ServletContextListener {
                 int canceledCount = dao.cancelExpiredProvisionalReservations(cutoffTime);                
                                 
                 if (canceledCount > 0) {
-                    System.out.println(canceledCount + "件の期限切れ仮予約をキャンセルしました。");
+                    System.out.println(canceledCount + "件の期限切れ仮予約/予約をキャンセルしました。");
                 }
                 
             } catch (DaoException e) {

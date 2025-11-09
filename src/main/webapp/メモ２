@@ -1,0 +1,452 @@
+/*
+    // =================================================================
+    // ▼▼▼ 最終修正版・デバッグ機能付きJavaScript ▼▼▼
+    // =================================================================
+
+    /**
+     * [デバッグ用] キャッチされなかったグローバルなエラーを捕捉します。
+     
+    window.onerror = function(message, source, lineno, colno, error) {
+        console.error("[FATAL ERROR] Uncaught exception:", {
+            message: message,
+            source: source,
+            lineno: lineno,
+            colno: colno,
+            error: error
+        });
+        return false; // trueにするとエラーがコンソールに表示されなくなります
+    };
+    
+    /**
+     * [デバッグ用] 要素取得を安全に行うラッパー関数
+     
+    function getElementByIdSafe(id, functionName) {
+        const element = document.getElementById(id);
+        if (!element) {
+            console.warn(`[DEBUG] In ${functionName}, element with ID '${id}' was not found. This may be expected depending on the current view.`);
+        }
+        return element;
+    }
+
+    // onclick属性から呼び出せるように、これらの関数はグローバルスコープに定義します
+    function goToChangeStep(stepName) {
+        console.log(`[DEBUG] goToChangeStep called with step: '${stepName}'`);
+        try {
+            getElementByIdSafe('next_step', 'goToChangeStep').value = stepName;
+            const countEl = getElementByIdSafe('count', 'goToChangeStep');
+            if (countEl) { // mainビューにのみ存在するため、存在チェックを追加
+                 getElementByIdSafe('numberPeople', 'goToChangeStep').value = countEl.innerText;
+            }
+            getElementByIdSafe('changeFlowForm', 'goToChangeStep').submit();
+        } catch (e) {
+            console.error('[ERROR] in goToChangeStep function:', e);
+        }
+    }
+    // windowオブジェクトに明示的にアタッチして、呼び出しを確実にします
+    window.goToChangeStep = goToChangeStep;
+    
+    // --- メインの処理は、DOMが完全に読み込まれてから実行します ---
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[DEBUG] DOMContentLoaded event fired. Initializing scripts...');
+        
+        // [修正点] DOM読み込み後に時刻を取得することで、undefinedになるのを防ぎます
+        const currentTime = document.body.dataset.currentTime;
+        console.log(`[DEBUG] Current time read from data attribute: '${currentTime}'`);
+
+        const isChangeView = "${isChangeView}" === "true";
+        if (isChangeView) {
+            const changeStepParam = "${changeStep}";
+            const showConfirmChangeParam = "${not empty showConfirmChange}" === "true";
+            console.log(`[DEBUG] Initializing ChangeView. Step: ${changeStepParam}, ConfirmMode: ${showConfirmChangeParam}`);
+
+            if (changeStepParam === 'main' || showConfirmChangeParam) {
+                initializeMainChangeScreen();
+            } else if (changeStepParam === 'time') {
+                // currentTimeを引数として渡します
+                initializeTimeScreen(currentTime); 
+            } else if (changeStepParam === 'seat') {
+                initializeSeatChangeScreen();
+            }
+        } else {
+             console.log('[DEBUG] Not in ChangeView. No specific initialization needed.');
+        }
+    });
+
+    // --- 各ビューの初期化関数 ---
+
+    function initializeMainChangeScreen() {
+        console.log('[DEBUG] Initializing MainChangeScreen...');
+        try {
+            const goToConfirmButton = getElementByIdSafe('goToConfirmButton', 'initializeMainChangeScreen');
+            const numberPeopleInput = getElementByIdSafe("numberPeople", 'initializeMainChangeScreen');
+            const decreaseBtn = getElementByIdSafe('decreaseBtn', 'initializeMainChangeScreen');
+            const increaseBtn = getElementByIdSafe('increaseBtn', 'initializeMainChangeScreen');
+
+            if (goToConfirmButton && numberPeopleInput && decreaseBtn && increaseBtn) {
+                const updatePeopleCount = (newCount) => {
+                    numberPeopleInput.value = newCount;
+                    getElementByIdSafe('next_step', 'updatePeopleCount').value = 'goToTime'; 
+                    getElementByIdSafe('startTime', 'updatePeopleCount').value = '';
+                    getElementByIdSafe('endTime', 'updatePeopleCount').value = '';
+                    getElementByIdSafe('selectedSeats', 'updatePeopleCount').value = '';
+                    getElementByIdSafe('changeFlowForm', 'updatePeopleCount').submit();
+                }
+                increaseBtn.onclick = () => updatePeopleCount(parseInt(numberPeopleInput.value, 10) + 1);
+                decreaseBtn.onclick = () => {
+                    const currentCount = parseInt(numberPeopleInput.value, 10);
+                    if (currentCount > 1) { updatePeopleCount(currentCount - 1); }
+                };
+                
+                const checkGoToConfirmButtonState = () => {
+                    const timeIsSelected = getElementByIdSafe('startTime', 'checkGoToConfirmButtonState').value !== "";
+                    const seatsAreSelected = getElementByIdSafe('selectedSeats', 'checkGoToConfirmButtonState').value !== "";
+                    getElementByIdSafe('seatSelectButton', 'checkGoToConfirmButtonState').disabled = !timeIsSelected;
+                    goToConfirmButton.disabled = !(timeIsSelected && seatsAreSelected);
+                }
+                goToConfirmButton.onclick = () => {
+                    getElementByIdSafe('next_step', 'goToConfirmButton.onclick').value = 'provisionalChange';
+                    getElementByIdSafe('changeFlowForm', 'goToConfirmButton.onclick').submit();
+                };
+                checkGoToConfirmButtonState();
+            }
+
+            const finalConfirmButton = getElementByIdSafe('finalConfirmButton', 'initializeMainChangeScreen');
+            if (finalConfirmButton) {
+                finalConfirmButton.onclick = () => {
+                    getElementByIdSafe('next_step', 'finalConfirmButton.onclick').value = 'executeChange';
+                    getElementByIdSafe('changeFlowForm', 'finalConfirmButton.onclick').submit();
+                };
+            }
+        } catch (e) {
+            console.error('[ERROR] in initializeMainChangeScreen:', e);
+        }
+    }
+    
+    function initializeTimeScreen(currentTime) {
+        console.log('[DEBUG] Initializing TimeScreen...');
+        try {
+            const startDisplay = document.querySelector('.selected-time-start');
+            const endDisplay = document.querySelector('.selected-time-end');
+            const confirmBtn = getElementByIdSafe('timeConfirmBtn', 'initializeTimeScreen');
+            const hintText = getElementByIdSafe('hint-text', 'initializeTimeScreen');
+            if(!startDisplay || !endDisplay || !confirmBtn || !hintText) {
+                console.error("[ERROR] Could not find all required elements for TimeScreen."); return;
+            }
+
+            let selectedStartTime = null;
+            let selectedEndTime = null;
+
+            // [修正点] currentTimeが有効かチェックしてからsplitを実行します
+            if (currentTime && typeof currentTime === 'string' && currentTime.includes(':')) {
+                const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+                const currentTimeNumeric = currentHour * 100 + currentMinute;
+                document.querySelectorAll('.time-button').forEach(button => {
+                    const buttonTime = button.textContent.trim();
+                    if (!buttonTime) return;
+                    const buttonNumericTime = parseInt(buttonTime.replace(':', ''), 10);
+                    if (buttonNumericTime < currentTimeNumeric) {
+                        button.disabled = true;
+                        button.classList.add('past-time');
+                        button.onclick = null;
+                    }
+                });
+            } else {
+                 console.warn("[WARN] currentTime value is invalid or missing. Past time slots will not be disabled.", currentTime);
+            }
+
+            // [修正点] windowオブジェクトに直接関数を定義して、onclickから確実に見つけられるようにします
+            window.selectTime = function (button) {
+                if (button.disabled) return;
+                const clickedTime = button.textContent.trim();
+
+                if (!selectedStartTime || (selectedStartTime && selectedEndTime)) {
+                    selectedStartTime = clickedTime; selectedEndTime = null;
+                } else {
+                    selectedEndTime = clickedTime;
+                    const startTimeNumeric = parseInt(selectedStartTime.replace(':', ''), 10);
+                    const endTimeNumeric = parseInt(selectedEndTime.replace(':', ''), 10);
+                    if (startTimeNumeric > endTimeNumeric) {
+                        [selectedStartTime, selectedEndTime] = [selectedEndTime, selectedStartTime];
+                    }
+                }
+                updateTimeUI();
+            }
+
+            const updateTimeUI = () => {
+                startDisplay.textContent = selectedStartTime || '開始時間';
+                endDisplay.textContent = selectedEndTime || '終了時間';
+                hintText.textContent = !selectedStartTime ? '開始時間を選択してください。' : !selectedEndTime ? '終了時間を選択してください。' : 'よろしければ下のボタンを押してください。';
+                getElementByIdSafe('startTime', 'updateTimeUI').value = selectedStartTime || '';
+                getElementByIdSafe('endTime', 'updateTimeUI').value = selectedEndTime || '';
+                
+                const startTimeNumeric = selectedStartTime ? parseInt(selectedStartTime.replace(':', ''), 10) : null;
+                const endTimeNumeric = selectedEndTime ? parseInt(selectedEndTime.replace(':', ''), 10) : null;
+
+                document.querySelectorAll('.time-button').forEach(btn => {
+                    if (btn.classList.contains('past-time')) return;
+                    btn.classList.remove('selected-start', 'selected-end', 'selected-range');
+                    const btnTime = btn.textContent.trim();
+                    const btnNum = parseInt(btnTime.replace(':', ''), 10);
+                    if (btnTime === selectedStartTime) btn.classList.add('selected-start');
+                    else if (btnTime === selectedEndTime) btn.classList.add('selected-end');
+                    else if (startTimeNumeric && endTimeNumeric && btnNum > startTimeNumeric && btnNum < endTimeNumeric) btn.classList.add('selected-range');
+                });
+                
+                confirmBtn.disabled = !(selectedStartTime && selectedEndTime);
+            }
+            updateTimeUI();
+        } catch (e) {
+            console.error('[ERROR] in initializeTimeScreen:', e);
+        }
+    }
+
+    function initializeSeatChangeScreen() {
+        console.log('[DEBUG] Initializing SeatChangeScreen...');
+        try {
+            const requiredCountEl = getElementByIdSafe('required-count', 'initializeSeatChangeScreen');
+            if (!requiredCountEl) return;
+            const requiredCount = parseInt(requiredCountEl.textContent, 10);
+            const selectedSeatsInput = getElementByIdSafe('selectedSeats', 'initializeSeatChangeScreen');
+            const initialSeats = selectedSeatsInput.value ? selectedSeatsInput.value.split(',') : [];
+            const selectedSeats = new Set(initialSeats);
+
+            const confirmBtn = getElementByIdSafe('seatConfirmBtn', 'initializeSeatChangeScreen');
+            const selectedSeatsDisplay = getElementByIdSafe('selected-seats-display', 'initializeSeatChangeScreen');
+            const selectedCountSpan = getElementByIdSafe('selected-count', 'initializeSeatChangeScreen');
+            
+            window.toggleSeat = function (seatElement) {
+                const seatName = seatElement.dataset.name;
+                if (seatElement.classList.contains('occupied')) return;
+                if (selectedSeats.has(seatName)) { selectedSeats.delete(seatName); }
+                else if (selectedSeats.size < requiredCount) { selectedSeats.add(seatName); }
+                updateSeatUI();
+            }
+
+            const updateSeatUI = () => {
+                document.querySelectorAll('.seat-cell').forEach(cell => {
+                    if (cell.classList.contains('occupied')) return;
+                    cell.classList.toggle('selected', selectedSeats.has(cell.dataset.name));
+                    cell.classList.toggle('available', !selectedSeats.has(cell.dataset.name));
+                });
+                const selectedArray = Array.from(selectedSeats).sort();
+                selectedSeatsInput.value = selectedArray.join(',');
+                selectedSeatsDisplay.textContent = selectedArray.length > 0 ? selectedArray.join(', ') : '座席未選択';
+                selectedCountSpan.textContent = selectedArray.length;
+                confirmBtn.disabled = (selectedSeats.size !== requiredCount);
+            }
+            updateSeatUI();
+        } catch(e) {
+            console.error('[ERROR] in initializeSeatChangeScreen:', e);
+        }
+    }
+
+/*
+    const currentTime = "<%= currentTimeJst %>";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const isChangeView = "${isChangeView}";
+        
+        if (isChangeView) {
+            const changeStepParam = "${changeStep}";
+            const showConfirmChangeParam = "${not empty showConfirmChange}";
+
+            if (changeStepParam === 'main' || showConfirmChangeParam) {
+                initializeMainChangeScreen();
+            } else if (changeStepParam === 'time') {
+                initializeTimeScreen();
+            } else if (changeStepParam === 'seat') {
+                initializeSeatChangeScreen();
+            }
+        }
+    });
+
+    function initializeMainChangeScreen() {
+        const goToConfirmButton = document.getElementById('goToConfirmButton');
+        if (goToConfirmButton) {
+            const numberPeopleInput = document.getElementById("numberPeople");
+            const decreaseBtn = document.getElementById('decreaseBtn');
+            const increaseBtn = document.getElementById('increaseBtn');
+            function updatePeopleCount(newCount) {
+                document.getElementById('numberPeople').value = newCount;
+                document.getElementById('next_step').value = 'goToTime'; 
+                document.getElementById('startTime').value = '';
+                document.getElementById('endTime').value = '';
+                document.getElementById('selectedSeats').value = '';
+                document.getElementById('changeFlowForm').submit();
+            }
+            increaseBtn.onclick = () => { updatePeopleCount(parseInt(numberPeopleInput.value) + 1); };
+            decreaseBtn.onclick = () => {
+                const currentCount = parseInt(numberPeopleInput.value);
+                if (currentCount > 1) { updatePeopleCount(currentCount - 1); }
+            };
+            function checkGoToConfirmButtonState() {
+                const timeIsSelected = document.getElementById('startTime').value !== "";
+                const seatsAreSelected = document.getElementById('selectedSeats').value !== "";
+                document.getElementById('seatSelectButton').disabled = !timeIsSelected;
+                goToConfirmButton.disabled = !(timeIsSelected && seatsAreSelected);
+            }
+            goToConfirmButton.onclick = () => {
+                document.getElementById('next_step').value = 'provisionalChange';
+                document.getElementById('changeFlowForm').submit();
+            };
+            checkGoToConfirmButtonState();
+        }
+        const finalConfirmButton = document.getElementById('finalConfirmButton');
+        if (finalConfirmButton) {
+            finalConfirmButton.onclick = () => {
+                document.getElementById('next_step').value = 'executeChange';
+                document.getElementById('changeFlowForm').submit();
+            };
+        }
+    }
+    
+    // =================================================================
+    // ▼▼▼ ここからが修正された時間選択のロジックです ▼▼▼
+    // =================================================================
+    function initializeTimeScreen() {
+        const startDisplay = document.querySelector('.selected-time-start');
+        const endDisplay = document.querySelector('.selected-time-end');
+        const confirmBtn = document.getElementById('timeConfirmBtn');
+        const hintText = document.getElementById('hint-text');
+
+        let selectedStartTime = null;
+        let selectedEndTime = null;
+
+        // --- 過去の時間を無効化する処理 ---
+        const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+        const currentTimeNumeric = currentHour * 100 + currentMinute;
+        
+        document.querySelectorAll('.time-button').forEach(button => {
+            const buttonTime = button.textContent.trim();
+            const buttonNumericTime = parseInt(buttonTime.replace(':', ''));
+            if (buttonNumericTime < currentTimeNumeric) {
+                button.disabled = true;
+                button.classList.add('past-time');
+                button.onclick = null;
+            }
+        });
+
+        // --- 時間選択のメイン関数 ---
+        window.selectTime = function (button) {
+            if (button.disabled) return;
+            
+            const clickedTime = button.textContent.trim();
+
+            if (!selectedStartTime || (selectedStartTime && selectedEndTime)) {
+                // 1回目のクリック、または3回目のクリック（リセットして新しい開始時間を選択）
+                selectedStartTime = clickedTime;
+                selectedEndTime = null;
+            } else {
+                // 2回目のクリック（終了時間を選択）
+                selectedEndTime = clickedTime;
+                
+                // 開始時刻と終了時刻を比較し、必要なら入れ替える
+                const startTimeNumeric = parseInt(selectedStartTime.replace(':', ''));
+                const endTimeNumeric = parseInt(selectedEndTime.replace(':', ''));
+                if (startTimeNumeric > endTimeNumeric) {
+                    [selectedStartTime, selectedEndTime] = [selectedEndTime, selectedStartTime];
+                }
+            }
+            updateTimeUI();
+        }
+
+        // --- UI（表示）を更新する関数 ---
+        function updateTimeUI() {
+            // 上部の時刻表示を更新
+            startDisplay.textContent = selectedStartTime || '開始時間';
+            endDisplay.textContent = selectedEndTime || '終了時間';
+
+            // ヒントテキストを更新
+            if (!selectedStartTime) {
+                hintText.textContent = '開始時間を選択してください。';
+            } else if (!selectedEndTime) {
+                hintText.textContent = '終了時間を選択してください。';
+            } else {
+                hintText.textContent = 'よろしければ下のボタンを押してください。';
+            }
+            
+            // formの隠しフィールドを更新
+            document.getElementById('startTime').value = selectedStartTime || '';
+            document.getElementById('endTime').value = selectedEndTime || '';
+            
+            const startTimeNumeric = selectedStartTime ? parseInt(selectedStartTime.replace(':', '')) : null;
+            const endTimeNumeric = selectedEndTime ? parseInt(selectedEndTime.replace(':', '')) : null;
+
+            // 全ての時間ボタンのスタイルを更新
+            document.querySelectorAll('.time-button').forEach(btn => {
+                if (btn.classList.contains('past-time')) return;
+                
+                btn.classList.remove('selected-start', 'selected-end', 'selected-range');
+                const btnTime = btn.textContent.trim();
+                const btnNum = parseInt(btnTime.replace(':', ''));
+                
+                if (btnTime === selectedStartTime) {
+                    btn.classList.add('selected-start'); // 開始時間
+                } else if (btnTime === selectedEndTime) {
+                    btn.classList.add('selected-end'); // 終了時間
+                } else if (startTimeNumeric && endTimeNumeric && btnNum > startTimeNumeric && btnNum < endTimeNumeric) {
+                    btn.classList.add('selected-range'); // 間の時間
+                }
+            });
+            
+            // 確定ボタンの状態を更新（開始と終了の両方が選択されている場合のみ有効）
+            confirmBtn.disabled = !(selectedStartTime && selectedEndTime);
+        }
+        
+        // 初期表示をセットアップ
+        updateTimeUI();
+    }
+    // =================================================================
+    // ▲▲▲ 修正された時間選択のロジックはここまでです ▲▲▲
+    // =================================================================
+
+    function initializeSeatChangeScreen() {
+        const requiredCount = parseInt(document.getElementById('required-count').textContent);
+        const selectedSeatsInput = document.getElementById('selectedSeats');
+        const initialSeats = selectedSeatsInput.value ? selectedSeatsInput.value.split(',') : [];
+        const selectedSeats = new Set(initialSeats);
+
+        const confirmBtn = document.getElementById('seatConfirmBtn');
+        const selectedSeatsDisplay = document.getElementById('selected-seats-display');
+        const selectedCountSpan = document.getElementById('selected-count');
+        
+        window.toggleSeat = function (seatElement) {
+            const seatName = seatElement.dataset.name;
+            if (seatElement.classList.contains('occupied')) return;
+            
+            if (selectedSeats.has(seatName)) {
+                selectedSeats.delete(seatName);
+            } else {
+                if (selectedSeats.size < requiredCount) {
+                    selectedSeats.add(seatName);
+                }
+            }
+            updateSeatUI();
+        }
+
+        function updateSeatUI() {
+            document.querySelectorAll('.seat-cell').forEach(cell => {
+                if (cell.classList.contains('occupied')) return;
+                
+                if (selectedSeats.has(cell.dataset.name)) {
+                    cell.classList.add('selected');
+                    cell.classList.remove('available');
+                } else {
+                    cell.classList.remove('selected');
+                    cell.classList.add('available');
+                }
+            });
+            const selectedArray = Array.from(selectedSeats).sort();
+            selectedSeatsInput.value = selectedArray.join(',');
+            selectedSeatsDisplay.textContent = selectedArray.length > 0 ? selectedArray.join(', ') : '座席未選択';
+            selectedCountSpan.textContent = selectedArray.length;
+            confirmBtn.disabled = (selectedSeats.size !== requiredCount);
+        }
+        updateSeatUI();
+    }
+
+    function goToChangeStep(stepName) {
+        document.getElementById('next_step').value = stepName;
+        document.getElementById('numberPeople').value = document.getElementById('count').innerText;
+        document.getElementById('changeFlowForm').submit();
+    }*/

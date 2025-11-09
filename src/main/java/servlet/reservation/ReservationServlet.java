@@ -87,7 +87,7 @@ public class ReservationServlet extends HttpServlet {
         
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-
+            
         String step = request.getParameter("step");
         if (step == null || step.isEmpty()) {
             step = "main";
@@ -95,6 +95,9 @@ public class ReservationServlet extends HttpServlet {
 
         try {
             switch (step) {
+                case "update_main":
+                    handleUpdateMainStep(request, response, session);
+                    break;
                 case "time":
                     handleTimeStep(request, response, session);
                     break;
@@ -292,5 +295,31 @@ public class ReservationServlet extends HttpServlet {
         if (seats.size() > 5) r.setSeat6(seats.get(5));
         if (seats.size() > 6) r.setSeat7(seats.get(6));
         if (seats.size() > 7) r.setSeat8(seats.get(7));
+    }
+
+    // ReservationServlet.java のクラス内に、他の handle... メソッドと同じレベルで追加してください。
+
+    /**
+     * メイン画面での人数変更を処理し、セッションに保存して画面を再表示します。
+     */
+    private void handleUpdateMainStep(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+        throws ServletException, IOException {
+        
+        String numberPeopleStr = request.getParameter("numberPeople");
+        if (numberPeopleStr != null && !numberPeopleStr.isEmpty()) {
+            try {
+                // JSPのEL式 (${sessionScope.numberPeople}) が数値も文字列も扱えるため、
+                // 今後の利用を考えてIntegerで保存するのがより安全です。
+                int numberPeople = Integer.parseInt(numberPeopleStr);
+                session.setAttribute("numberPeople", numberPeople);
+            } catch (NumberFormatException e) {
+                // 不正な値が送られてきた場合はログに出力し、セッションは更新しません。
+                e.printStackTrace();
+            }
+        }
+        
+        // 情報を更新した後、メイン画面を再表示します。
+        request.setAttribute("step", "main");
+        forwardToMainJsp(request, response);
     }
 }

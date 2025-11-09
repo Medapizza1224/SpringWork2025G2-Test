@@ -219,6 +219,21 @@
         .time-button { display: block; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px; text-align: center; cursor: pointer; background: white; font-size: 12px; text-decoration: none; color: #212529; }
         .time-button:hover { background-color: #f1f3f5; }
         .time-button.active { background-color: #0d6efd; color: white; border-color: #0d6efd; font-weight: bold; }
+        /* --- ログアウトフォームのスタイル --- */
+        .logout-form {
+        margin-top: auto; /* この指定でフォームが最下部に配置される */
+        padding: 20px;    /* 周囲の余白を調整 */
+        }
+
+        .logout-form button {
+        width: 100%;
+        margin-top: 0; /* 上の汎用スタイルをリセット */
+        background-color: #6c757d; /* ログアウトボタンの色を変更 */
+        }
+
+        .logout-form button:hover {
+        background-color: #5a6268;
+        }
     </style>
 </head>
 <body>
@@ -238,10 +253,10 @@
             <li><a href="#user-section" class="nav-link"><img src="${pageContext.request.contextPath}/image/user.png" alt="ユーザー管理" class="nav-icon">ユーザー</a></li>
             <!--<li><a href="#admin-section" class="nav-link"><img src="${pageContext.request.contextPath}/image/admin.png" alt="管理者管理" class="nav-icon">管理者</a></li>-->
             <li><a href="#setting-section" class="nav-link"><img src="${pageContext.request.contextPath}/image/setting.png" alt="設定" class="nav-icon">設定</a></li>
-            <form action="${pageContext.request.contextPath}/admin-logout" method="post" style="margin-top: 330px; padding: 0 10px;">
-                <button type="submit" style="width: 100%;">ログアウト</button>
-            </form>
         </ul>
+        <form class="logout-form" action="${pageContext.request.contextPath}/admin-logout" method="post">
+            <button type="submit">ログアウト</button>
+        </form>
     </nav>
 
     <!-- 右側メインコンテンツ -->

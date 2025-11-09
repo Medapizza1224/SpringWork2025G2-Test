@@ -22,27 +22,35 @@
       /* --- 共通スタイル --- */
       body { margin: 0; font-family: 'Inter', sans-serif; background-color: #e0e0e0; display: flex; justify-content: center; }
       .container { box-sizing: border-box; position: relative; width: 393px; height: 852px; background: #ffffff; border: 1px solid #ccc; overflow-y: auto; }
-      .header { width: 100%; height: 60px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; background-color: #fff; }
+      .title { padding: 20px 20px 0; font-weight: 700; font-size: 20px; color: #000000; }
       .menu-icon .line { width: 25px; height: 2px; background-color: #000; margin: 6px 0; }
       .logo { font-weight: bold; text-align: center; }
       .user-icon { font-size: 24px; }
-      
+      header {
+            position: relative; /* 子要素の絶対配置の基準にする */
+            display: flex;
+            align-items: center; /* アイテムを垂直方向に中央揃え */
+            justify-content: space-between; /* 両端に配置 */
+            padding: 10px; /*よしなに調整*/
+            border-bottom: 1px solid #ccc; /*分かりやすくするため*/
+            padding-left: 65px;
+        }
       /* --- タブと背景 --- */
-      .content-background { position: absolute; width: 100%; height: calc(100% - 120px); left: 0; top: 120px; transition: background-color: 0.3s ease; }
-      .tabs { position: absolute; width: calc(100% - 30px); left: 15px; top: 130px; display: flex; height: 65px; z-index: 5; }
+      .content-background { overflow-y: hidden; height: 91vh; position: absolute; width: 100%; /*height: calc(100% - 110px);*/ left: 0; transition: background-color: 0.3s ease; }
+      .tabs { position: absolute; width: calc(100% - 30px); left: 15px; top: 110px; display: flex; height: 65px; z-index: 5; }
       .tab { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; border-radius: 5px 5px 0 0; box-sizing: border-box; cursor: pointer; border: 1px solid transparent; }
       .tab-link { color: inherit; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; height: 100%; justify-content: center;}
       .tab.active.qr-active { background: #ffffff; color: #0070c0; }
-      .tab.inactive.qr-active { background: rgba(255, 255, 255, 0.4); color: #000000; border-color: #e7f9ff; }
+      .tab.inactive.qr-active { background: rgba(255, 255, 255, 0.4); color: #000000; /*border-color: #e7f9ff;*/ }
       .tab.active.change-active { background: #ffffff; color: #00b050; }
-      .tab.inactive.change-active { background: rgba(255, 255, 255, 0.4); color: #000000; border-color: #e8fae2; }
+      .tab.inactive.change-active { background: rgba(255, 255, 255, 0.4); color: #000000; /*border-color: #e8fae2;*/ }
       .tab.active.cancel-active { background: #ffffff; color: #c00000; }
-      .tab.inactive.cancel-active { background: rgba(255, 255, 255, 0.4); color: #000000; border-color: #fff2f2; }
-      .view-container { position: absolute; width: calc(100% - 30px); left: 15px; top: 195px; height: auto; padding-bottom: 20px; }
-      .main-card { background: #ffffff; border-radius: 0 0 5px 5px; box-sizing: border-box; }
+      .tab.inactive.cancel-active { background: rgba(255, 255, 255, 0.4); color: #000000; /*border-color: #fff2f2; */}
+      .view-container { border-radius: 0 0 5px 5px; position: absolute; width: calc(100% - 30px); left: 15px; top: 175px; height: auto; padding-bottom: 20px; background-color: white;}
+      .main-card { background: #ffffff; border-radius: 0 0 5px 5px; box-sizing: border-box; border-radius: 0 0 5px 5px;}
       
       /* --- QRビュー & キャンセルビュー スタイル --- */
-      .submit-btn-container { text-align: center; margin-top: 30px; }
+      .submit-btn-container { text-align: center; text-align: center; margin-top: 30px; }
       .submit-btn { width: 250px; height: 45px; color: #ffffff; font-size: 20px; font-weight: 700; border: none; border-radius: 50px; cursor: pointer; }
       .confirmation-area { text-align: center; }
       .confirmation-item { padding: 15px 0; border-bottom: 1px solid #eee; text-align: left; }
@@ -53,10 +61,10 @@
       /* --- ▼▼▼ 変更ビューのスタイル ▼▼▼ --- */
       .change-view-outer-card { padding: 0 !important; }
       .change-view-title { padding: 20px 20px 0; font-weight: 700; font-size: 20px; color: #000000; margin: 0; }
-      .change-view-content-background { background: #F5F5F5; border-radius: 0 0 5px 5px; padding: 20px; box-sizing: border-box; margin-top: 20px; }
+      .change-view-content-background { background: #FFF; border-radius: 0 0 5px 5px; /*padding: 20px;*/ box-sizing: border-box; /*margin-top: 20px; */ }
       .form-card { padding: 25px; background: #FFFFFF; border-radius: 10px; box-sizing: border-box; }
-      .info-box { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
-      .action-button { background-color: #00b050; color: #fff; padding: 12px 25px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+      .info-box { background-color: white; padding: 20px; border-radius: 8px; /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px;*/ }
+      .action-button { margin-left: 95px; background-color: #00b050; color: #fff; padding: 12px 25px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
       .action-button:disabled { background-color: #ccc; cursor: not-allowed; }
       .step-bar { display: flex; align-items: center; justify-content: space-between; height: 30px; margin: 20px 0; }
       .step { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; }
@@ -64,7 +72,7 @@
       .section { padding: 20px 0; border-bottom: 1px solid #CCCCCC; }
       .section:last-of-type { border-bottom: none; }
       .row-flex { display: flex; justify-content: space-between; align-items: center; }
-      .item-label-group { display: flex; align-items: center; gap: 10px; }
+      .item-label-group { display: flex; align-items: center;  }
       .item-label-group .icon { font-size: 24px; }
       .item-label-group .label-text { font-size: 12px; color: #888888; font-weight: 600; }
       .counter { display: flex; align-items: center; }
@@ -85,7 +93,7 @@
           cursor: not-allowed;
           border-color: #e0e0e0;
       }
-      .seat-grid-container { background-color: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); overflow-x: auto; }
+      .seat-grid-container { background-color: white; padding: 10px; border-radius: 8px;  overflow-y: hidden; height: 320px; }
       .seat-grid { display: grid; grid-template-columns: 30px repeat(4, 1fr) 10px repeat(3, 1fr) 10px repeat(3, 1fr) 10px repeat(6, 1fr) 10px repeat(4, 1fr) 30px; gap: 1px; min-width: 850px; }
       .row-label { text-align: right; padding-right: 5px; font-size: 10px; color: #888; height: 25px; display: flex; align-items: center; justify-content: flex-end; }
       .seat-cell { width: 25px; height: 25px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 2px; font-size: 14px; }
@@ -98,6 +106,44 @@
       .step.active-step .step-icon { background-color: #00b050; color: white; border-color: #00b050; }
       .step.active-step .step-icon::before { content: '✓'; font-size: 14px; text-align: center; line-height: 24px; }
       .step.active-step .step-icon img { display: none; }
+      .seat-cell.non-existent {
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    color: #ccc;
+    cursor: default;
+}
+.col-label {
+    grid-column: span 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.aisle {
+    grid-column: span 1;
+}
+.grid-container { display: flex; gap: 10px; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .hour-labels { width: 50px; }
+        .hour-label { height: 48px; display: flex; align-items: center; justify-content: flex-end; font-size: 12px; color: #555; font-weight: bold;}
+        .time-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .time-button {
+            padding: 6px 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background-color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            display: flex;           /* ← 追加: Flexboxコンテナにする */
+            align-items: center;     /* ← 追加: 垂直方向の中央揃え */
+            justify-content: center; /* ← 追加: 水平方向の中央揃え */
+            color: #0070C0;
+        }
+        .info-box { border-radius: 25px 25px 0 0;*/ background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .seat-grid { overflow-x: hidden; overflow-y:hidden; transform: scale(0.4); transform-origin: top left; display: grid; grid-template-columns: 30px repeat(4, 1fr) 10px repeat(3, 1fr) 10px repeat(3, 1fr) 10px repeat(6, 1fr) 10px repeat(4, 1fr) 30px; gap: 1px; }
+
       /* --- ▲▲▲ 変更ビューのスタイルここまで ▲▲▲ --- */
     </style>
 </head>
@@ -115,9 +161,11 @@
 
 <div class="container">
     <header>
-        <div class="menu-icon"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="menu-icon"></div>
         <img src="${pageContext.request.contextPath}/image/logo.png" alt="ロゴ" style="width: 200px; height: auto;">
-        <div class="user-icon">👤</div>
+        <div class="user-icon" onclick="location.href='${pageContext.request.contextPath}/logout';" style="cursor: pointer;">
+            <img src="${pageContext.request.contextPath}/image/ログアウト.png" alt="ログアウト" style="height: 50px; width: auto; display: block;">
+        </div>
     </header>
 
     <div class="content-background" style="background-color: ${isQrView ? '#E7F5FF' : (isChangeView ? '#E8FAE2' : '#FFF2F2')};"></div>
@@ -125,17 +173,17 @@
     <div class="tabs">
         <div class="tab ${isQrView ? 'active qr-active' : 'inactive qr-active'}">
             <a href="${pageContext.request.contextPath}/reservation-modify" class="tab-link">
-              <span>📊</span> <span>QRコード</span>
+              <img src="${pageContext.request.contextPath}/image/QRコード.png" alt="QRコード" height="30"><span>QRコード</span>
             </a>
         </div>
         <div class="tab ${isChangeView ? 'active change-active' : 'inactive change-active'}">
            <a href="javascript:document.getElementById('changeTabForm').submit();" class="tab-link">
-              <span>📄</span> <span>変更</span>
+              <img src="${pageContext.request.contextPath}/image/変更.png" alt="変更" height="30"> <span>変更</span>
            </a>
         </div>
         <div class="tab ${isCancelView ? 'active cancel-active' : 'inactive cancel-active'}">
             <a href="javascript:document.getElementById('cancelTabForm').submit();" class="tab-link">
-              <span>📅</span> <span>キャンセル</span>
+              <img src="${pageContext.request.contextPath}/image/キャンセル.png" alt="キャンセル" height="30"> <span>キャンセル</span>
             </a>
         </div>
     </div>
@@ -156,17 +204,18 @@
                     <img src="data:image/png;base64,${sessionScope.qrCodeBase64}" alt="予約QRコード" style="width: 204px; height: 204px; margin: 0 auto;"/>
                     <p style="margin-top: 25px; font-size: 12px; color: #555; line-height: 1.5;">
                         予約は完了済みです。<br />
-                        予約時間までに自動チェックイン機に、QRコードをスキャンしてください。
+                        予約時間までに自動チェックイン機に、<br />
+                        QRコードをスキャンしてください。
                     </p>
                     <%-- QRコード詳細カード --%>
                     <div width: 300px; left: 50%; transform: translateX(-50%); bottom: 70px; background: #ffffff; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15); border-radius: 10px;">
-                        <div style="background: #0070c0; color: #ffffff; padding: 4px 15px 18px; border-radius: 10px 10px 0 0; display: flex; align-items: center;">
+                        <div style="background: #0070c0; color: #ffffff; padding: 4px 15px 18px; border-radius: 10px 10px 0 0; border: rgba(229, 244, 255, 1);  display: flex; align-items: center;">
                             <div style="flex-grow: 1;">
-                                <div style="font-size: 6px; font-weight: 600;">予約番号</div>
-                                <div style="font-size: 14px; font-weight: 600; word-break: break-all;">${reservationId}</div>
+                                <div style="font-size: 6px; font-weight: 600; text-align: left" >予約番号</div>
+                                <div style="font-size: 12px; font-weight: 600; word-break: break-all;">${reservationId}</div>
                             </div>
                         </div>
-                        <div style="padding: 22px 20px;">
+                        <div style="padding: 22px 20px; border-radius:0 0 10px 10px; border: 1px solid rgba(229, 244, 255, 1)">
                             <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: #000;">
                                 <span style="font-size: 20px;">${startTime}</span>
                                 <% 
@@ -238,7 +287,7 @@
                             </c:when>
 
                             <%-- 変更フロー：座席選択ステップ --%>
-                            <c:when test="${changeStep == 'seat'}">
+                            <%--<c:when test="${changeStep == 'seat'}">
                                 <h2 class="change-view-title">座席選択</h2>
                                 <div class="change-view-content-background">
                                     <div class="info-box">
@@ -264,11 +313,156 @@
                                         <button type="button" id="seatConfirmBtn" class="action-button" disabled onclick="document.getElementById('next_step').value='provisionalChange'; this.form.submit();">変更内容の確認へ</button>
                                     </div>
                                 </div>
+                            </c:when>--%>
+
+                            <c:when test="${changeStep == 'seat'}">
+                                <h2 class="title">座席選択</h2>
+                                <div class="info-box">
+                                    <p>予約人数: <strong>${sessionScope.numberPeople}名</strong></p>
+                                    選択中: (<span id="selected-count">0</span>/<span id="required-count">${sessionScope.numberPeople}</span>)
+                                    <div id="selected-seats-display" style="font-weight: bold; margin-top: 5px;">座席未選択</div>
+                                </div>
+
+                                <%-- 存在しない座席のリスト --%>
+                                <c:set var="nonExistentSeats" value=",B3,D3,H3,J3,L3,P3,R3,T3,B4,D4,F4,H4,J4,L4,N4,P4,R4,T4,A5,B5,C5,D5,F5,G5,H5,J5,L5,M5,O5,P5,Q5,R5,S5,T5,B6,D6,F6,G6,H6,J6,L6,N6,P6,R6,T6,B7,D7,F7,G7,H7,J7,L7,M7,O7,P7,R7,T7,B8,D8,F8,G8,H8,J8,L8,N8,P8,R8,T8,B9,D9,F9,G9,H9,J9,L9,M9,O9,P9,R9,T9,B10,D10,F10,G10,H10,J10,L10,N10,P10,R10,T10,A11,B11,C11,D11,F11,G11,H11,J11,L11,M11,O11,P11,Q11,R11,S11,T11,A12,B12,C12,D12,F12,G12,H12,J12,L12,N12,P12,R12,T12,A13,B13,D13,F13,G13,H13,J13,L13,M13,O13,P13,R13,T13,B14,D14,F14,G14,H14,J14,L14,N14,P14,R14,T14,B15,D15,F15,H15,J15,L15,M15,O15,P15,R15,T15,B16,D16,F16,H16,J16,L16,N16,P16,R16,T16,A17,B17,D17,F17,H17,J17,L17,M17,O17,P17,R17,T17,A18,B18,D18,F18,H18,J18,L18,N18,P18,R18,T18,A19,C19,E19,G19,I19,K19,M19,N19,O19,P19,Q19,R19,S19,T19,B20,D20,E20,G20,I20,K20,M20,O20,Q20,S20,B21,D21,E21,G21,I21,K21,M21,O21,Q21,S21," />
+
+                                <div class="seat-grid-container">
+                                    <div class="seat-grid" id="seatGrid">
+                                        
+                                        <%-- 座席列ヘッダー (A, B, C...) --%>
+                                        <div class="col-label"></div> <%-- 行番号用の空白 --%>
+                                        <c:forEach items="${['A','B','C','D']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        <div class="aisle"></div>
+                                        <c:forEach items="${['E','F','G']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        <div class="aisle"></div>
+                                        <c:forEach items="${['H','I','J']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        <div class="aisle"></div>
+                                        <c:forEach items="${['K','L','M']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        <div class="aisle"></div>
+                                        <c:forEach items="${['N','O','P']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        <div class="aisle"></div>
+                                        <c:forEach items="${['Q','R','S','T']}" var="col"><div class="col-label">${col}</div></c:forEach>
+                                        
+                                        <%-- 座席本体 (1〜21行) --%>
+                                        <c:forEach begin="1" end="21" var="row">
+                                            <div class="row-label">${row}</div>
+
+                                            <%-- A-D列 --%>
+                                            <c:forEach items="${['A','B','C','D']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                            
+                                            <div class="aisle"></div> <%-- 通路 --%>
+
+                                            <%-- E-G列 --%>
+                                            <c:forEach items="${['E','F','G']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+
+                                            <div class="aisle"></div> <%-- 通路 --%>
+
+                                            <%-- H-J列 --%>
+                                            <c:forEach items="${['H','I','J']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+
+                                            <div class="aisle"></div> <%-- 通路 --%>
+
+                                            <%-- K-M列 --%>
+                                            <c:forEach items="${['K','L','M']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+
+                                            <div class="aisle"></div> <%-- 通路 --%>
+
+                                            <%-- N-P列 --%>
+                                            <c:forEach items="${['N','O','P']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+
+                                            <div class="aisle"></div> <%-- 通路 --%>
+
+                                            <%-- Q-T列 --%>
+                                            <c:forEach items="${['Q','R','S','T']}" var="col">
+                                                <c:set var="seatName" value="${col}${row}"/>
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(nonExistentSeats, ','.concat(seatName).concat(','))}">
+                                                        <div class="seat-cell non-existent">×</div>
+                                                    </c:when>
+                                                    <c:when test="${fn:contains(reservedSeats, seatName)}">
+                                                        <div class="seat-cell occupied" data-name="${seatName}">×</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="seat-cell available" data-name="${seatName}" onclick="toggleSeat(this)">○</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                                <div class="submit-button-container">
+                                    <button type="button" id="seatConfirmBtn" class="action-button" disabled onclick="document.getElementById('next_step').value='provisional'; this.form.submit();">予約内容の確認へ</button>
+                                </div>
                             </c:when>
                             
                             <%-- 変更フロー：メイン/確認ステップ --%>
                             <c:otherwise> 
-                                <h2 class="change-view-title">${not empty showConfirmChange ? '変更内容の確認' : '予約の変更'}</h2>
+                                <%--<h2 class="change-view-title">${not empty showConfirmChange ? '変更内容の確認' : '予約の変更'}</h2>--%>
                                 <div class="change-view-content-background">
                                     <c:set var="isPeopleDone" value="${true}" />
                                     <c:set var="isTimeDone" value="${not empty currentStartTime}" />
@@ -348,7 +542,7 @@
                     <div class="submit-btn-container">
                         <form action="${pageContext.request.contextPath}/reservation-modify" method="post">
                              <input type="hidden" name="step" value="executeCancel">
-                             <button type="submit" class="submit-btn" style="background: #c00000;">はい、キャンセルします</button>
+                             <button type="submit" class="submit-btn" style="background: #c00000;">キャンセル</button>
                         </form>
                     </div>
                 </div>
@@ -439,39 +633,79 @@
     function initializeMainChangeScreen() {
         console.log('[DEBUG] Initializing MainChangeScreen...');
         try {
+            // --- 必要なHTML要素を取得 ---
             const goToConfirmButton = getElementByIdSafe('goToConfirmButton', 'initializeMainChangeScreen');
-            const numberPeopleInput = getElementByIdSafe("numberPeople", 'initializeMainChangeScreen');
+            const numberPeopleInput = getElementByIdSafe("numberPeople", 'initializeMainChangeScreen'); // form内の隠しフィールド
             const decreaseBtn = getElementByIdSafe('decreaseBtn', 'initializeMainChangeScreen');
             const increaseBtn = getElementByIdSafe('increaseBtn', 'initializeMainChangeScreen');
+            const countSpan = getElementByIdSafe('count', 'initializeMainChangeScreen'); // 画面表示用の<span>要素
 
-            if (goToConfirmButton && numberPeopleInput && decreaseBtn && increaseBtn) {
+            // --- 人数変更、確認ボタンなどが存在するメイン画面でのみ処理を実行 ---
+            if (goToConfirmButton && numberPeopleInput && decreaseBtn && increaseBtn && countSpan) {
+                
+                /**
+                * 人数カウンターの値を更新する関数（修正版）
+                * @param {number} newCount - 新しい人数の値
+                */
                 const updatePeopleCount = (newCount) => {
+                    // 1. 画面に表示されている数字を更新する
+                    countSpan.innerText = newCount;
+                    
+                    // 2. formで送信するための隠しフィールドの値を更新する
                     numberPeopleInput.value = newCount;
-                    getElementByIdSafe('next_step', 'updatePeopleCount').value = 'goToTime'; 
+                    
+                    // 3. 人数を変更した場合、時間と座席の選択はリセットすべきなので、関連フィールドをクリアする
                     getElementByIdSafe('startTime', 'updatePeopleCount').value = '';
                     getElementByIdSafe('endTime', 'updatePeopleCount').value = '';
                     getElementByIdSafe('selectedSeats', 'updatePeopleCount').value = '';
-                    getElementByIdSafe('changeFlowForm', 'updatePeopleCount').submit();
-                }
-                increaseBtn.onclick = () => updatePeopleCount(parseInt(numberPeopleInput.value, 10) + 1);
+                    
+                    // 4. ボタンの状態をチェックし直す（時間等がクリアされたので「内容を確認する」ボタンは非活性になる）
+                    checkGoToConfirmButtonState();
+
+                    // ★★★ 元のコードにあったフォームの自動送信処理を削除 ★★★
+                    // getElementByIdSafe('changeFlowForm', 'updatePeopleCount').submit();
+                };
+
+                // 「＋」ボタンがクリックされた時の処理
+                increaseBtn.onclick = () => {
+                    const currentCount = parseInt(numberPeopleInput.value, 10);
+                    updatePeopleCount(currentCount + 1);
+                };
+
+                // 「－」ボタンがクリックされた時の処理
                 decreaseBtn.onclick = () => {
                     const currentCount = parseInt(numberPeopleInput.value, 10);
-                    if (currentCount > 1) { updatePeopleCount(currentCount - 1); }
+                    // 人数は1人未満にはならないようにする
+                    if (currentCount > 1) {
+                        updatePeopleCount(currentCount - 1);
+                    }
                 };
                 
+                /**
+                * 「内容を確認する」ボタンと「座席選択」ボタンの活性/非活性を切り替える関数
+                */
                 const checkGoToConfirmButtonState = () => {
                     const timeIsSelected = getElementByIdSafe('startTime', 'checkGoToConfirmButtonState').value !== "";
                     const seatsAreSelected = getElementByIdSafe('selectedSeats', 'checkGoToConfirmButtonState').value !== "";
+                    
+                    // 時間が選択されていなければ「座席選択」ボタンは押せない
                     getElementByIdSafe('seatSelectButton', 'checkGoToConfirmButtonState').disabled = !timeIsSelected;
+                    
+                    // 時間と座席の両方が選択されていなければ「内容を確認する」ボタンは押せない
                     goToConfirmButton.disabled = !(timeIsSelected && seatsAreSelected);
-                }
+                };
+
+                // 「内容を確認する」ボタンがクリックされた時の処理
                 goToConfirmButton.onclick = () => {
                     getElementByIdSafe('next_step', 'goToConfirmButton.onclick').value = 'provisionalChange';
                     getElementByIdSafe('changeFlowForm', 'goToConfirmButton.onclick').submit();
                 };
+
+                // 画面の初期表示時にボタンの状態を一度チェックする
                 checkGoToConfirmButtonState();
             }
 
+            // --- 確認画面に表示される「変更を確定する」ボタンの処理 ---
             const finalConfirmButton = getElementByIdSafe('finalConfirmButton', 'initializeMainChangeScreen');
             if (finalConfirmButton) {
                 finalConfirmButton.onclick = () => {
