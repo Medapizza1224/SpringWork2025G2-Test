@@ -601,8 +601,8 @@
     // windowオブジェクトに明示的にアタッチして、呼び出しを確実にします
     window.goToChangeStep = goToChangeStep;
     
-    // --- メインの処理は、DOMが完全に読み込まれてから実行します ---
-    document.addEventListener('DOMContentLoaded', function() {
+    // --- メインの処理は、DOMが完全に読み込まれてから実行します ---/**
+    /*document.addEventListener('DOMContentLoaded', function() {
         console.log('[DEBUG] DOMContentLoaded event fired. Initializing scripts...');
         
         // [修正点] DOM読み込み後に時刻を取得することで、undefinedになるのを防ぎます
@@ -625,6 +625,34 @@
             }
         } else {
              console.log('[DEBUG] Not in ChangeView. No specific initialization needed.');
+        }
+    });*/
+
+    // initializeMainChangeScreen の下にある DOMContentLoaded イベントリスナーの中
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[DEBUG] DOMContentLoaded event fired. Initializing scripts...');
+        
+        // 【修正箇所】JSP変数から直接値を取得するように修正
+        // const currentTime = document.body.dataset.currentTime; // 削除またはコメントアウト
+        const currentTime = "${currentTimeJst}"; // ← 修正後の正しい時刻取得方法
+        console.log(`[DEBUG] Current time read from JSP injection: '${currentTime}'`);
+
+        const isChangeView = "${isChangeView}" === "true";
+        if (isChangeView) {
+            const changeStepParam = "${changeStep}";
+            const showConfirmChangeParam = "${not empty showConfirmChange}" === "true";
+            console.log(`[DEBUG] Initializing ChangeView. Step: ${changeStepParam}, ConfirmMode: ${showConfirmChangeParam}`);
+
+            if (changeStepParam === 'main' || showConfirmChangeParam) {
+                initializeMainChangeScreen();
+            } else if (changeStepParam === 'time') {
+                // currentTimeを引数として渡します
+                initializeTimeScreen(currentTime); // ← 正しい値が渡される
+            } else if (changeStepParam === 'seat') {
+                initializeSeatChangeScreen();
+            }
+        } else {
+            console.log('[DEBUG] Not in ChangeView. No specific initialization needed.');
         }
     });
 

@@ -26,6 +26,8 @@ public class AdminDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
+
+            
         
         // --- 門番ロジックを強化 ---
         HttpSession session = request.getSession(false); 
@@ -49,7 +51,7 @@ public class AdminDashboardServlet extends HttpServlet {
             }
             
             // ログインページにリダイレクト
-            response.sendRedirect(request.getContextPath() + "/signin");
+            response.sendRedirect(request.getContextPath() + "/admin-signin");
             return; // 処理を中断
         }
         // ▲▲▲ここまで修正▲▲▲

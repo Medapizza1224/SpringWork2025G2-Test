@@ -44,8 +44,8 @@ public class DeleteReservationServlet implements ServletContextListener {
             }
         };
 
-        final int EXECUTION_HOUR = 10;
-        final int EXECUTION_MINUTE = 57;
+        final int EXECUTION_HOUR = 20;
+        final int EXECUTION_MINUTE = 31;
         final int EXECUTION_SECOND = 0;
 
         ZoneId zoneId = ZoneId.of("Asia/Tokyo");

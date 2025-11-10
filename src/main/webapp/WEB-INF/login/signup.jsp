@@ -193,13 +193,13 @@
                 <div class="form-group">
                     <label for="id" class="form-label">ユーザー名</label>
                     <input type="text" id="id" name="id" class="form-control" value="${fn:escapeXml(requestScope.lastInput.id)}" required>
-                    <small class="form-text">8文字以上、半角英数字ハイフンのみ</small>
+                    <small class="form-text">8文字以上64文字以下、半角英数字ハイフンのみ</small>
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="form-label">パスワード</label>
                     <input type="password" id="password" name="password" class="form-control" required>
-                    <small class="form-text">64文字以下</small>
+                    <small class="form-text">8文字以上64文字以下、半角英数字ハイフンのみ</small>
                 </div>
                 
                 <button type="submit" class="btn-login">登録</button>

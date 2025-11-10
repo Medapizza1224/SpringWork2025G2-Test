@@ -262,10 +262,10 @@
     <!-- 右側メインコンテンツ -->
     <main class="admin-main">
         <section id="home-section" class="main-section">
-            <h2>ホーム</h2><!--
+            <h2>ホーム</h2>
             <c:if test="${not empty requestScope.error}"><div class="message error">エラー：${fn:escapeXml(requestScope.error)}</div></c:if>
             <c:if test="${not empty requestScope.success}"><div class="message success">${fn:escapeXml(requestScope.success)}</div></c:if>
-            -->
+            
             <div class="flowchart-container">
 
                 <!-- 予約・座席管理ブロック -->
@@ -329,7 +329,7 @@
                         <span id="selected-date">${fn:escapeXml(requestScope.currentDate)}</span>
                     </div>
                     <div class="time-grid-container">
-                        <c:forEach begin="8" end="19" var="h">
+                        <c:forEach begin="0" end="23" var="h">
                             <c:forEach begin="0" end="50" step="10" var="m">
                                 <c:set var="timeValue"><c:if test="${h<10}">0</c:if>${h}:<c:if test="${m<10}">0</c:if>${m}</c:set>
                                 <c:set var="activeClass" value="${requestScope.selectedTime eq timeValue ? ' active' : ''}" />
