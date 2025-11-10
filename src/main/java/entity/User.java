@@ -101,13 +101,15 @@ public class User {
      * @throws Failure 検証に失敗した場合
      */
     private void checkUserName(String userName) throws Failure {
-        // ▼▼▼ 変更点1: 文字数の下限を8から1に変更 ▼▼▼
-        if (userName == null || userName.length() < 1 || userName.length() > 64) {
-            throw new Failure("ユーザー名は1文字以上64文字以下で入力してください。");
+        // 文字数チェック (8文字以上64文字以下)
+        if (userName.length() < 8 || userName.length() > 64) {
+            throw new Failure("ユーザー名は8文字以上64文字以下で入力してください。");
         }
-        // ▼▼▼ 変更点2: 全角数字「３」などを許容するように正規表現を修正 ▼▼▼
-        if (!userName.matches("^[a-zA-Z0-9一-龠ぁ-んァ-ヶ々ー０-９]+$")) {
-            throw new Failure("ユーザー名には英数の大文字・小文字・日本語・全角数字のみ使用できます。");
+        
+        // ▼▼▼【変更点】使用可能文字のチェック（半角英数字のみか）▼▼▼
+        // 文字列全体が半角の英字(a-z, A-Z)と数字(0-9)のみで構成されているかを確認
+        if (!userName.matches("^[a-zA-Z0-9]+$")) {
+            throw new Failure("ユーザー名には、半角の英字と数字のみ使用できます。");
         }
     }
 
